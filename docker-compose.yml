@@ -1,0 +1,25 @@
+version: "0"
+services:
+  app:
+    build: .
+    ports: ['5000:5000']
+    volumes: 
+      - ./:/app
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DB: ${MYSQL_DB}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+  mysql:
+    image: mysql:8.0
+    volumes:
+      - app-data:/var/lib/mysql
+    environment: 
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_HOST}
+
+volumes:
+  app-data:

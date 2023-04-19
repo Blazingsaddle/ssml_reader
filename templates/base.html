@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <script src="{{ url_for('static', filename='js/libraries/stimulus.umd.js') }}"></script>
+        <script type="module">
+            import { SSMLParser } from "{{ url_for('static', filename='js/libraries/Biku/ssml parser.js') }}";
+
+            (() => {
+                const application = Stimulus.Application.start()
+
+
+                application.register("read", class extends Stimulus.Controller {
+                    static get targets() {
+                        return [ "ssml" ]
+                    }
+
+                    async replay() {
+                        let parser = new SSMLParser(this.ssmlTarget.value)
+                        parser.initialize(this.ssmlTarget.value)
+                        let parsed = {"ssml": parser.parse(this.ssmlTarget.value)}
+
+                        let response = await fetch("{{ url_for('polly_resp') }}", {
+                            "method": "POST",
+                            "headers": {"Content-Type": "application/json"},
+                            "body": JSON.stringify(parsed),
+                        })
+                        let resp = await response.blob()
+                        var audio = new Audio()
+                        audio.src = URL.createObjectURL(resp)
+                        audio.play()           
+                    }
+
+                    copy() {
+                        navigator.clipboard.writeText(this.ssmlTarget.value)
+                    }
+                })
+            })()
+        </script>
+    </head>
+    <body>
+        <div class="has-background-light has-full-height">
+            <div class="container">
+                <nav class="navbar has-background-light" role="navigation" aria-label="main navigation">
+                    <div class="navbar-brand">
+                        <div class="navbar-item is-size-2">
+                            SSML TTS Tester
+                        </a>
+                    
+                        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    
+                    <div id="navbarBasicExample" class="navbar-menu">
+                        <div class="navbar-start">
+                            <a href="{{ url_for('home') }}" class="navbar-item">
+                                Home
+                            </a>
+
+                            <a href="{{ url_for('documentation') }}" target="_blank" class="navbar-item">
+                                Documentation
+                            </a>
+                        
+                            <a href="{{ url_for('tips_and_tricks') }}" target="_blank" class="navbar-item">
+                                Tips and Tricks
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+                    {% block content %}{% endblock %}
+            </div>
+        </div>
+    </body>
+</html>
