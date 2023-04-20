@@ -2,10 +2,11 @@
 
 {% block content %}
     <div class="flex-container">
-        <div class="column has-background-light is-right-content" data-controller="read">
-            <textarea class="textarea" placeholder="SSML and/or Bikubot shorthand goes here" data-read-target="ssml"></textarea>
-            <button class="button is-primary is-medium mt-2" data-action="click->read#replay">Listen</button>
+        <div class="has-background-light is-right-content" data-controller="read">
+            <textarea class="textarea" maxlength="500" placeholder="SSML and/or Bikubot shorthand goes here" data-read-target="ssml" data-action="input->read#update"></textarea>
+            <button class="button is-primary is-medium mt-2" data-read-target="replayButton" data-action="click->read#replay click->read#disable">Listen</button>
             <button class="button is-primary is-medium mt-2 mr-2" data-action="click->read#copy">Copy</button>
+            <div class="is-flex is-pulled-right pr-2" data-read-target="charcount">0/500</div>
         </div>
     </div>
 {% endblock %}

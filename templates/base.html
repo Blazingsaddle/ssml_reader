@@ -6,14 +6,20 @@
         <script src="{{ url_for('static', filename='js/libraries/stimulus.umd.js') }}"></script>
         <script type="module">
             import { SSMLParser } from "{{ url_for('static', filename='js/libraries/Biku/ssml parser.js') }}";
-
+    
             (() => {
                 const application = Stimulus.Application.start()
 
-
                 application.register("read", class extends Stimulus.Controller {
                     static get targets() {
-                        return [ "ssml" ]
+                        return [ "ssml", "charcount", "replayButton" ]
+                    }
+
+                    disable() {
+                        this.replayButtonTarget.disabled = true
+                        setTimeout(function(){
+                            this.replayButtonTarget.disabled = false;
+                        }.bind(this),3000);
                     }
 
                     async replay() {
@@ -30,6 +36,10 @@
                         var audio = new Audio()
                         audio.src = URL.createObjectURL(resp)
                         audio.play()           
+                    }
+
+                    update() {
+                        this.charcountTarget.innerHTML = `${this.ssmlTarget.value.length}/500`
                     }
 
                     copy() {
