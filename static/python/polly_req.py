@@ -31,6 +31,20 @@ class PollySession:
                     data = stream.read(1024)
         return Response(generate(), mimetype="audio/mpeg")
     
+    def generateMP3File(self):
+        with closing(self.response["AudioStream"]) as stream:
+            fileName = f"{random.randrange(1000,9999)}.mp3"
+            output = os.path.join(gettempdir(), fileName)
+            # Open a file for writing the output as a binary stream
+            with open(output, "wb") as file:
+                file.write(stream.read())
+            return output
+
+
+    
+    def deleteMP3File(self, filePath):
+        os.remove(filePath)
+    
     def getError(self):
         return self.error
 
