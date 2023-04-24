@@ -37,6 +37,12 @@ export class SSMLTokenzier{
                     this.reader.readnext()
                     break;
                 }
+                case "\\":{
+                    if(this.reader.peak() !== " "){
+                        this.reader.readnext()
+                        break;
+                    }
+                }
                 default:{
                     sub_string = sub_string + this.reader.char
                     this.reader.readnext()

@@ -16,10 +16,10 @@ async def on_ready():
 
 @bot.tree.command(name="ssml", description="Test your TTS! You can use plain text, SSML, Bikubot shorthand, or a mix of all of them!")
 async def ssml(interaction: discord.Interaction, text: str):
-    result = subprocess.run(['node', '../js/biku_interface.mjs', text], stdout=subprocess.PIPE).stdout.decode('utf-8')
+    result = subprocess.run(['node', 'static/js/biku_interface.mjs', text], stdout=subprocess.PIPE).stdout.decode('utf-8')
     p = PollySession(result)
     filePath = p.generateMP3File()
-    await interaction.response.send_message(text, file=discord.File(filePath))
+    await interaction.response.send_message(text, file=discord.File(filePath), delete_after=600.0)
     p.deleteMP3File(filePath)
 
 bot.run(os.environ["SSML_BOT_KEY"])
