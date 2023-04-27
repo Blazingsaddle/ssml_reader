@@ -15,7 +15,7 @@ class ButtonView(discord.ui.View):
     
     @discord.ui.button(label="Save to chat", style=discord.ButtonStyle.primary)
     async def buttoncallback(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.original_interaction.delete_original_response()
+        await self.original_interaction.delete_original_response()
         return_text = f"(original message sent by {self.user}) \n" + self.text
         await interaction.response.send_message(return_text, file=discord.File(self.filePath))
 
