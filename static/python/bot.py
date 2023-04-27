@@ -6,15 +6,16 @@ import subprocess
 import os
 
 class ButtonView(discord.ui.View):
-    def __init__(self, text, user, filePath):
+    def __init__(self, text, interaction, filePath):
         self.text = text
-        self.user = user
+        self.original_interaction = interaction
+        self.user = interaction.user.mention
         self.filePath = filePath
         super().__init__()
     
     @discord.ui.button(label="Save to chat", style=discord.ButtonStyle.primary)
     async def buttoncallback(self, interaction: discord.Interaction, button: discord.ui.Button):
-        button.disabled=True
+        self.original_interaction.delete_original_response()
         return_text = f"(original message sent by {self.user}) \n" + self.text
         await interaction.response.send_message(return_text, file=discord.File(self.filePath))
 
@@ -32,7 +33,7 @@ async def ssml(interaction: discord.Interaction, text: str):
     result = subprocess.run(['node', 'static/js/biku_interface.mjs', text], stdout=subprocess.PIPE).stdout.decode('utf-8')
     p = PollySession(result)
     filePath = p.generateMP3File()
-    view = ButtonView(text, interaction.user.mention, filePath)
+    view = ButtonView(text, interaction, filePath)
     await interaction.response.send_message(text, file=discord.File(filePath), view=view, ephemeral=True)
 
 bot.run(os.environ["SSML_BOT_KEY"])
