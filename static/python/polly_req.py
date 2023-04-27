@@ -33,7 +33,7 @@ class PollySession:
     
     def generateMP3File(self):
         with closing(self.response["AudioStream"]) as stream:
-            fileName = f"{random.randrange(1000,9999)}.mp3"
+            fileName = f"{random.randrange(100,999)}.mp3"
             output = os.path.join(gettempdir(), fileName)
             # Open a file for writing the output as a binary stream
             with open(output, "wb") as file:
