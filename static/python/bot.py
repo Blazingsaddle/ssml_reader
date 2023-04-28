@@ -34,6 +34,9 @@ async def ssml(interaction: discord.Interaction, text: str):
     p = PollySession(result)
     filePath = p.generateMP3File()
     view = ButtonView(text, interaction, filePath)
-    await interaction.response.send_message(text, file=discord.File(filePath), view=view, ephemeral=True)
+    if p.error:
+        await interaction.response.send_message("Error processing TTS, please check your syntax", ephemeral=True)
+    else:
+        await interaction.response.send_message(text, file=discord.File(filePath), view=view, ephemeral=True)
 
 bot.run(os.environ["SSML_BOT_KEY"])
