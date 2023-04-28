@@ -32,11 +32,11 @@ async def on_ready():
 async def ssml(interaction: discord.Interaction, text: str):
     result = subprocess.run(['node', 'static/js/biku_interface.mjs', text], stdout=subprocess.PIPE).stdout.decode('utf-8')
     p = PollySession(result)
-    filePath = p.generateMP3File()
-    view = ButtonView(text, interaction, filePath)
     if p.error:
         await interaction.response.send_message("Error processing TTS, please check your syntax", ephemeral=True)
     else:
+        filePath = p.generateMP3File()
+        view = ButtonView(text, interaction, filePath)
         await interaction.response.send_message(text, file=discord.File(filePath), view=view, ephemeral=True)
 
 bot.run(os.environ["SSML_BOT_KEY"])
